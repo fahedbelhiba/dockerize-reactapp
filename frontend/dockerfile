@@ -1,0 +1,23 @@
+FROM node:latest
+
+ARG UID=1001
+ARG GID=1001
+
+RUN addgroup --gid $GID appgroup \
+    && adduser --disabled-password --gecos "" --uid $UID --gid $GID --home /app user
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN chown -R user:appgroup /app
+
+RUN npm install 
+
+COPY . .
+
+EXPOSE 3000
+
+USER user
+
+CMD ["npm", "start"]
